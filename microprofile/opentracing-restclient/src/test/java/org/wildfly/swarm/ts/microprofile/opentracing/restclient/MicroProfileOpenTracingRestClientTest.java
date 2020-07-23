@@ -17,6 +17,7 @@ import org.wildfly.swarm.ts.common.docker.DockerContainers;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -57,9 +58,15 @@ public class MicroProfileOpenTracingRestClientTest {
     public void traces() {
         String[] methods = {"injected", "programmatic", "jaxrs"};
 
+        // What about some counter to see if time is enough and where it drops !!!!
+        AtomicInteger counter = new AtomicInteger();
+
         // the tracer inside the application doesn't send traces to the Jaeger server immediately,
         // they are batched, so we need to wait a bit
-        await().atMost(60, TimeUnit.SECONDS).untilAsserted(() -> {
+        await().atMost(100, TimeUnit.SECONDS).untilAsserted(() -> {
+            counter.incrementAndGet();
+            System.out.println("------------------------------------------");
+            System.out.println(counter);
             String response = Request.Get("http://localhost:16686/api/traces?service=test-traced-service").execute().returnContent().asString();
             JsonObject json = JsonParser.parseString(response).getAsJsonObject();
             assertThat(json.has("data")).isTrue();
