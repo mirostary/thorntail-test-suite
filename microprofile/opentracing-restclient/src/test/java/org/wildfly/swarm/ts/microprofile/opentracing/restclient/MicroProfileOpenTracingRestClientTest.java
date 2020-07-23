@@ -68,7 +68,7 @@ public class MicroProfileOpenTracingRestClientTest {
 
         // the tracer inside the application doesn't send traces to the Jaeger server immediately,
         // they are batched, so we need to wait a bit
-        await().atMost(40, TimeUnit.SECONDS).untilAsserted(() -> {
+        await().atMost(100, TimeUnit.SECONDS).untilAsserted(() -> {
             counter.incrementAndGet();
             System.out.println("-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-");
             System.out.println(counter);
