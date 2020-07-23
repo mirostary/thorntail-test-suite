@@ -60,12 +60,17 @@ public class MicroProfileOpenTracingRestClientTest {
 
         // What about some counter to see if time is enough and where it drops !!!!
         AtomicInteger counter = new AtomicInteger();
+        AtomicInteger counter2 = new AtomicInteger();
+
+        System.out.println("-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-");
+        counter2.incrementAndGet();
+        System.out.println(counter2);
 
         // the tracer inside the application doesn't send traces to the Jaeger server immediately,
         // they are batched, so we need to wait a bit
-        await().atMost(100, TimeUnit.SECONDS).untilAsserted(() -> {
+        await().atMost(20, TimeUnit.SECONDS).untilAsserted(() -> {
             counter.incrementAndGet();
-            System.out.println("------------------------------------------");
+            System.out.println("-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-");
             System.out.println(counter);
             String response = Request.Get("http://localhost:16686/api/traces?service=test-traced-service").execute().returnContent().asString();
             JsonObject json = JsonParser.parseString(response).getAsJsonObject();
