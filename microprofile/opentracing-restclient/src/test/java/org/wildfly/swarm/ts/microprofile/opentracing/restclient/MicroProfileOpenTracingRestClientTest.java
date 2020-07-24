@@ -63,7 +63,7 @@ public class MicroProfileOpenTracingRestClientTest {
 
         // the tracer inside the application doesn't send traces to the Jaeger server immediately,
         // they are batched, so we need to wait a bit
-        await().atMost(5, TimeUnit.MINUTES).untilAsserted(() -> {
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
             counter.incrementAndGet();
             System.out.println("-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-");
             System.out.println(counter);
@@ -75,6 +75,7 @@ public class MicroProfileOpenTracingRestClientTest {
             for (int i = 0; i < methods.length; i++) {
                 String method = methods[i];
                 JsonObject trace = data.get(i).getAsJsonObject();
+                System.out.println("Trace " + i + ": " + trace);
                 assertThat(trace.has("spans")).isTrue();
                 JsonArray spans = trace.getAsJsonArray("spans");
                 assertThat(spans).hasSize(4);
