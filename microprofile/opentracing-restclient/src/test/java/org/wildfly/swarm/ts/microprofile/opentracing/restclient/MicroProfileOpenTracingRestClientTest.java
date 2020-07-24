@@ -78,11 +78,14 @@ public class MicroProfileOpenTracingRestClientTest {
                 System.out.println("Trace " + i + ": " + trace);
                 assertThat(trace.has("spans")).isTrue();
                 JsonArray spans = trace.getAsJsonArray("spans");
+                System.out.println("Spans: " + spans);
                 assertThat(spans).hasSize(4);
                 assertThat(spans).anySatisfy(element -> {
                     JsonObject span = element.getAsJsonObject();
                     assertThat(span.get("operationName").getAsString())
                             .isEqualTo("org.wildfly.swarm.ts.microprofile.opentracing.restclient.MyService.hello");
+                    System.out.println("span: "+ span);
+                    System.out.println("operationName: " + span.get("operationName").getAsString());
                     assertThat(span.has("logs")).isTrue();
                     JsonArray logs = span.getAsJsonArray("logs");
                     assertThat(logs).hasSize(1);
