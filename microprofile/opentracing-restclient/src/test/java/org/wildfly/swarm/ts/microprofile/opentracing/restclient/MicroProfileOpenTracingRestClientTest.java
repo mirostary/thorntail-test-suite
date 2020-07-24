@@ -66,7 +66,7 @@ public class MicroProfileOpenTracingRestClientTest {
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
             counter.incrementAndGet();
             System.out.println("-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-");
-            System.out.println(counter);
+            System.out.println("Counter: " + counter);
             String response = Request.Get("http://localhost:16686/api/traces?service=test-traced-service").execute().returnContent().asString();
             JsonObject json = JsonParser.parseString(response).getAsJsonObject();
             assertThat(json.has("data")).isTrue();
@@ -75,29 +75,36 @@ public class MicroProfileOpenTracingRestClientTest {
             for (int i = 0; i < methods.length; i++) {
                 String method = methods[i];
                 JsonObject trace = data.get(i).getAsJsonObject();
-                System.out.println("Trace " + i + ": " + trace);
+                System.out.println("1");
                 assertThat(trace.has("spans")).isTrue();
                 JsonArray spans = trace.getAsJsonArray("spans");
-                System.out.println("Spans: " + spans);
+                System.out.println("2");
                 assertThat(spans).hasSize(4);
+                System.out.println("3");
                 assertThat(spans).anySatisfy(element -> {
+                    System.out.println("4");
                     JsonObject span = element.getAsJsonObject();
                     assertThat(span.get("operationName").getAsString())
                             .isEqualTo("org.wildfly.swarm.ts.microprofile.opentracing.restclient.MyService.hello");
-                    System.out.println("span: "+ span);
-                    System.out.println("operationName: " + span.get("operationName").getAsString());
+                    System.out.println("5");
                     assertThat(span.has("logs")).isTrue();
+                    System.out.println("6");
                     JsonArray logs = span.getAsJsonArray("logs");
                     assertThat(logs).hasSize(1);
+                    System.out.println("7");
                     JsonObject log = logs.get(0).getAsJsonObject();
                     assertThat(log.getAsJsonArray("fields").get(0).getAsJsonObject().get("value").getAsString())
                             .isEqualTo("Hello tracer");
+                    System.out.println("8");
                 });
                 assertThat(spans).anySatisfy(element -> {
+                    System.out.println("9");
                     JsonObject span = element.getAsJsonObject();
                     assertThat(span.get("operationName").getAsString())
                             .isEqualTo("GET:org.wildfly.swarm.ts.microprofile.opentracing.restclient.HelloResource.get");
+                    System.out.println("10");
                     assertThat(span.has("tags")).isTrue();
+                    System.out.println("11");
                     JsonArray tags = span.getAsJsonArray("tags");
                     for (JsonElement tagElement : tags) {
                         JsonObject tag = tagElement.getAsJsonObject();
@@ -118,12 +125,16 @@ public class MicroProfileOpenTracingRestClientTest {
                                 assertThat(tag.get("value").getAsString()).isEqualTo("server");
                                 break;
                         }
+                        System.out.println("12");
                     }
                 });
                 assertThat(spans).anySatisfy(element -> {
+                    System.out.println("13");
                     JsonObject span = element.getAsJsonObject();
                     assertThat(span.get("operationName").getAsString()).isEqualTo("GET");
+                    System.out.println("14");
                     assertThat(span.has("tags")).isTrue();
+                    System.out.println("15");
                     JsonArray tags = span.getAsJsonArray("tags");
                     for (JsonElement tagElement : tags) {
                         JsonObject tag = tagElement.getAsJsonObject();
@@ -144,13 +155,17 @@ public class MicroProfileOpenTracingRestClientTest {
                                 assertThat(tag.get("value").getAsString()).isEqualTo("client");
                                 break;
                         }
+                        System.out.println("16");
                     }
                 });
                 assertThat(spans).anySatisfy(element -> {
+                    System.out.println("17");
                     JsonObject span = element.getAsJsonObject();
                     assertThat(span.get("operationName").getAsString())
                             .isEqualTo("GET:org.wildfly.swarm.ts.microprofile.opentracing.restclient.ClientResource." + method);
+                    System.out.println("18");
                     assertThat(span.has("tags")).isTrue();
+                    System.out.println("19");
                     JsonArray tags = span.getAsJsonArray("tags");
                     for (JsonElement tagElement : tags) {
                         JsonObject tag = tagElement.getAsJsonObject();
@@ -171,6 +186,7 @@ public class MicroProfileOpenTracingRestClientTest {
                                 assertThat(tag.get("value").getAsString()).isEqualTo("server");
                                 break;
                         }
+                        System.out.println("20");
                     }
                 });
             }
